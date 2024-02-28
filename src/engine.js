@@ -6,6 +6,7 @@ class Engine {
     friction, elasticity
   ) {
 
+    this.default = createVector(pos.copy().x, pos.copy().y);
     this.pos = pos;
     this.shape = shape;
     this.dimensions = dimensions;
@@ -18,27 +19,44 @@ class Engine {
     this.velocity = createVector(0, 0);
     this.friction = friction;
     this.collided = false;
+    this.animation = false;
+
 
 
   }
 
-  applyForce(amplitude) {
+  setGravity(gValue) {
+    this.g = gValue / this.scale;
+  }
 
+  animate() {
+    this.animation = true;
+
+  }
+
+  reset() {
+    this.pos.x = this.default.x;
+    this.pos.y = this.default.y;
+    this.animation = false;
+    this.collided = false;
+
+  }
+  applyForce(amplitude) {
     this.velocity.y = this.velocity.y + amplitude;
 
   }
 
   checkCollision(other) {
-
     let metaHeight = (this.pos.y + this.dimensions.y / 2) - (other.pos.y);
+
     if (metaHeight > 0) {
 
       if (this.collided == false) {
 
         let counterForce = -1 *
           this.velocity.y *
-          this.elasticity *
-          other.elasticity /
+          map(this.elasticity.value(), 0, 100, 1, 2) *
+          map(other.elasticity.value(), 0, 100, 1, 2) /
           (this.friction * other.friction);
 
         this.collided = true;
@@ -46,7 +64,8 @@ class Engine {
 
         if (Math.abs(this.velocity.y) <= 0.15) {
           this.velocity.y = 0;
-          this.pos.y = other.pos.y - (other.dimensions.y);
+
+
         }
       }
 
@@ -71,6 +90,7 @@ class Engine {
 
   update() {
     this.drawShape();
+    if (!this.animation) return;
 
 
     if (this.force && !this.collided) {
