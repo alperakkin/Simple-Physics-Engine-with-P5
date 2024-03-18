@@ -7,12 +7,15 @@ let resetObject;
 
 let ballElasticity;
 let floorElasticity;
+let wind;
 
 let ballLabel;
 let floorLabel;
+let windLabel;
 
 let ballValue;
 let floorValue;
+let windValue;
 
 let gOption;
 
@@ -46,6 +49,10 @@ function setup() {
   floorElasticity.position(200, 30);
   floorElasticity.size(80);
 
+  wind = createSlider(0, 100, 0, 0);
+  wind.position(200, 50);
+  wind.size(80);
+
   gOption = createRadio();
   gOption.position(700, 20);
 
@@ -63,11 +70,16 @@ function setup() {
 
   ballElasticityValue = map(ballElasticity.value(), 0, 100, 1, 2).toFixed(2);
   floorElasticityValue = map(floorElasticity.value(), 0, 100, 1, 2).toFixed(2);
+  windValue = map(wind.value(), 0, 100, 0, 1).toFixed(2);
+
   ballLabel = createDiv(`Ball Elasticity: ${ballElasticityValue}`);
   ballLabel.position(5, 10);
 
   floorLabel = createDiv(`Floor Elasticity: ${floorElasticityValue}`);
   floorLabel.position(5, 30);
+
+  windLabel = createDiv(`Wind Force: ${windValue}`);
+  windLabel.position(5, 50);
 
 
 
@@ -104,10 +116,17 @@ function setup() {
 function draw() {
   ballElasticityValue = map(ballElasticity.value(), 0, 100, 1, 2).toFixed(2);
   floorElasticityValue = map(floorElasticity.value(), 0, 100, 1, 2).toFixed(2);
+  windValue = parseFloat(map(wind.value(), 0, 100, -1, 1).toFixed(2));
+
   ballLabel.html(`Ball Elasticity: ${ballElasticityValue}`);
   floorLabel.html(`Floor Elasticity: ${floorElasticityValue}`);
+  windLabel.html(`Wind Force: ${windValue}`);
+
   ball.setGravity(gravity[gOption.value()])
   background(220);
+
+  ball.applyWind(windValue);
+
   ball.update();
   floor.update();
   ball.checkCollision(floor);

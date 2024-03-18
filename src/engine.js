@@ -29,6 +29,10 @@ class Engine {
     this.g = gValue / this.scale;
   }
 
+  applyWind(f) {
+    this.velocity.x = this.velocity.x + f / this.scale;
+  }
+
   animate() {
     this.animation = true;
 
